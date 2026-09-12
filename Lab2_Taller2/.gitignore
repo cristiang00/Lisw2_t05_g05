@@ -1,0 +1,26 @@
+# Build output
+target/
+
+# SQLite database files
+*.db
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven wrapper downloaded jar
+.mvn/wrapper/maven-wrapper.jar
+
+# Logs
+*.log
