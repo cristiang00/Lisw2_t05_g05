@@ -23,6 +23,12 @@ public interface IQuestionRepository {
     Question findById(String id);
 
     /**
+     * Guarda una nueva pregunta.
+     * @param question La pregunta a guardar.
+     */
+    void save(Question question);
+
+    /**
      * Actualiza la información de una pregunta existente.
      * @param question La pregunta con la información actualizada.
      */

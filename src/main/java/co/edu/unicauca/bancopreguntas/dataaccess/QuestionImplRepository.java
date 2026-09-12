@@ -36,7 +36,8 @@ public class QuestionImplRepository implements IQuestionRepository {
                 "D. Crear interfaces gráficas"
             ),
             "B",
-            QuestionState.BORRADOR
+            QuestionState.BORRADOR,
+            "MULTIPLE_CHOICE"
         );
 
         // Pregunta 2
@@ -51,7 +52,8 @@ public class QuestionImplRepository implements IQuestionRepository {
                 "D. Decorator"
             ),
             "A",
-            QuestionState.PENDIENTE_REVISION
+            QuestionState.PENDIENTE_REVISION,
+            "MULTIPLE_CHOICE"
         );
 
         // Pregunta 3
@@ -66,7 +68,8 @@ public class QuestionImplRepository implements IQuestionRepository {
                 "D. Standard Responsibility Principle"
             ),
             "B",
-            QuestionState.BORRADOR
+            QuestionState.BORRADOR,
+            "MULTIPLE_CHOICE"
         );
 
         // Pregunta 4
@@ -81,7 +84,8 @@ public class QuestionImplRepository implements IQuestionRepository {
                 "D. Base de datos"
             ),
             "C",
-            QuestionState.ELIMINADA
+            QuestionState.ELIMINADA,
+            "MULTIPLE_CHOICE"
         );
 
         // Pregunta 5
@@ -96,7 +100,8 @@ public class QuestionImplRepository implements IQuestionRepository {
                 "D. Probar la interfaz gráfica de usuario"
             ),
             "C",
-            QuestionState.PENDIENTE_REVISION
+            QuestionState.PENDIENTE_REVISION,
+            "MULTIPLE_CHOICE"
         );
 
         questionsDB.put(q1.getId(), q1);
@@ -114,6 +119,13 @@ public class QuestionImplRepository implements IQuestionRepository {
     @Override
     public Question findById(String id) {
         return questionsDB.get(id);
+    }
+
+    @Override
+    public void save(Question question) {
+        if (question != null && question.getId() != null) {
+            questionsDB.put(question.getId(), question);
+        }
     }
 
     @Override

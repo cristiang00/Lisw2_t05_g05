@@ -35,13 +35,29 @@ public class MainView extends JFrame {
 
     private void initComponents() {
         setTitle("Banco de Preguntas Saber PRO");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 600);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(550, 700);
         setLayout(new BorderLayout(10, 10));
 
-        // Panel superior: Selección
+        // Panel superior que contiene Selección y Generación
+        JPanel pnlTop = new JPanel(new GridLayout(2, 1, 5, 5));
+        
+        // --- SECCIÓN: Generación de Preguntas ---
+        JPanel pnlGeneration = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        pnlGeneration.setBorder(BorderFactory.createTitledBorder("Generar Pregunta (Microkernel)"));
+        
+        JComboBox<String> cmbPluginType = new JComboBox<>(new String[]{"MULTIPLE_CHOICE", "CASE_BASED", "MULTIMEDIA"});
+        JButton btnGenerate = new JButton("Generar nueva");
+        
+        pnlGeneration.add(new JLabel("Tipo de Plugin:"));
+        pnlGeneration.add(cmbPluginType);
+        pnlGeneration.add(btnGenerate);
+        
+        pnlTop.add(pnlGeneration);
+
+        // --- SECCIÓN: Selección de Pregunta ---
         JPanel pnlSelection = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        pnlSelection.setBorder(BorderFactory.createTitledBorder("Seleccionar Pregunta"));
+        pnlSelection.setBorder(BorderFactory.createTitledBorder("Seleccionar Pregunta Existente"));
         
         questionComboBox = new JComboBox<>();
         btnLoad = new JButton("Cargar pregunta");
@@ -50,7 +66,8 @@ public class MainView extends JFrame {
         pnlSelection.add(questionComboBox);
         pnlSelection.add(btnLoad);
 
-        add(pnlSelection, BorderLayout.NORTH);
+        pnlTop.add(pnlSelection);
+        add(pnlTop, BorderLayout.NORTH);
 
         // Panel central: Formulario
         JPanel pnlForm = new JPanel(new GridBagLayout());
@@ -144,6 +161,50 @@ public class MainView extends JFrame {
         // Eventos
         btnLoad.addActionListener(e -> loadQuestionDetails());
         btnUpdate.addActionListener(e -> updateQuestionState());
+        btnGenerate.addActionListener(e -> handleGenerateQuestion((String) cmbPluginType.getSelectedItem()));
+    }
+
+    private void handleGenerateQuestion(String pluginType) {
+        try {
+            // Simulamos datos capturados desde una ventana de diálogo o inputs
+            String title = JOptionPane.showInputDialog(this, "Ingrese el título de la pregunta:");
+            if (title == null || title.trim().isEmpty()) return;
+
+            String content = JOptionPane.showInputDialog(this, "Ingrese el contenido de la pregunta:");
+            if (content == null || content.trim().isEmpty()) return;
+
+            String optionsStr = JOptionPane.showInputDialog(this, "Ingrese opciones separadas por coma (A,B,C,D):", "A,B,C,D");
+            java.util.List<String> options = (optionsStr != null) ? java.util.Arrays.asList(optionsStr.split(",")) : new java.util.ArrayList<>();
+
+            String correctAnswer = JOptionPane.showInputDialog(this, "Ingrese la respuesta correcta:");
+            
+            String additionalData = "";
+            if ("MULTIMEDIA".equals(pluginType)) {
+                additionalData = JOptionPane.showInputDialog(this, "Ingrese URL del recurso multimedia:");
+            }
+
+            co.edu.unicauca.bancopreguntas.domain.entities.QuestionRequest request = 
+                new co.edu.unicauca.bancopreguntas.domain.entities.QuestionRequest(
+                    title, content, pluginType, options, correctAnswer
+                );
+            request.setAdditionalData(additionalData);
+
+            Question generated = controller.generateQuestion(request);
+
+            if (generated != null) {
+                JOptionPane.showMessageDialog(this, "Pregunta generada con éxito:\n" + generated.getId(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                // Recargar el combo box para mostrar la nueva
+                questionComboBox.removeAllItems();
+                loadInitialData();
+                questionComboBox.setSelectedItem(generated);
+                loadQuestionDetails();
+            } else {
+                JOptionPane.showMessageDialog(this, "Fallo al generar la pregunta. Revise las validaciones.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void loadInitialData() {

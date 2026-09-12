@@ -75,4 +75,12 @@ public class QuestionService {
         
         return stats;
     }
+
+    /**
+     * Guarda una nueva pregunta en el repositorio.
+     * @param question Pregunta a guardar.
+     */
+    public void addQuestion(Question question) {
+        repository.save(question);
+    }
 }
