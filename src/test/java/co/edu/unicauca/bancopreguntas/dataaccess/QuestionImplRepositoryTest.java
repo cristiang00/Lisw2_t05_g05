@@ -73,7 +73,7 @@ class QuestionImplRepositoryTest {
     @DisplayName("update() con pregunta de ID inexistente no modifica nada")
     void testUpdateNonExistentQuestion() {
         Question fake = new Question("P-999", "Fake", "Fake?",
-            Arrays.asList("A", "B"), "A", QuestionState.BORRADOR);
+            Arrays.asList("A", "B"), "A", QuestionState.BORRADOR, "MULTIPLE_CHOICE");
 
         assertDoesNotThrow(() -> repository.update(fake));
         assertNull(repository.findById("P-999"));
